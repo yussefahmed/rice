@@ -1,0 +1,5 @@
+------TESTING Naughty Notifications------
+
+notify-send "Test Title" "Test message"
+
+-------------------------------------------

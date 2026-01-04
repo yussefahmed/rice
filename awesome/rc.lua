@@ -51,6 +51,26 @@ end
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
+-- {{{ Naughty Configuration (Modern Style)
+naughty.config.defaults.ontop = true
+naughty.config.defaults.timeout = 5
+naughty.config.defaults.position = "top_middle"
+naughty.config.defaults.border_width = 1
+naughty.config.defaults.margin = 16
+naughty.config.defaults.gap = 10
+
+-- Theme Variables
+beautiful.notification_bg = "#FFFFFF"
+beautiful.notification_fg = "#2D2D2D"
+beautiful.notification_border_color = "#E0E0E0"
+beautiful.notification_shape = function(cr, w, h) gears.shape.rounded_rect(cr, w, h, 8) end
+
+-- Specific overrides for Critical alerts
+naughty.config.presets.critical.bg = "#FF5555"
+naughty.config.presets.critical.fg = "#FFFFFF"
+naughty.config.presets.critical.border_color = "#FF2222"
+-- }}}
+
 -- This is used later as the default terminal and editor to run.
 terminal = "kitty"
 editor = os.getenv("EDITOR") or "editor"
