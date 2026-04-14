@@ -82,6 +82,7 @@ editor_cmd = terminal .. " -e " .. editor
 -- I suggest you to remap Mod4 to another key using xmodmap or other tools.
 -- However, you can use another modifier like Mod1, but it may interact with others.
 modkey = "Mod4"
+local polybar_height = 30
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = {
@@ -206,6 +207,7 @@ awful.screen.connect_for_each_screen(function(s)
 
     -- Each screen has its own tag table.
     awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
+    s.padding = { top = polybar_height }
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -470,7 +472,8 @@ awful.rules.rules = {
                      keys = clientkeys,
                      buttons = clientbuttons,
                      screen = awful.screen.preferred,
-                     placement = awful.placement.no_overlap+awful.placement.no_offscreen
+                     floating = false,
+                     maximized = false
      }
     },
 
@@ -519,6 +522,11 @@ awful.rules.rules = {
 -- {{{ Signals
 -- Signal function to execute when a new client appears.
 client.connect_signal("manage", function (c)
+    -- Force un-maximize
+    c.maximized = false
+    c.maximized_vertical = false
+    c.maximized_horizontal = false
+
     -- Set the windows at the slave,
     -- i.e. put it at the end of others instead of setting it master.
     -- if not awesome.startup then awful.client.setslave(c) end
@@ -582,12 +590,18 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 
 
 -- CUSTOM CONFIGS 
-beautiful.useless_gap=20
+beautiful.useless_gap=0
 
--- start up picom on device start
-awful.spawn.with_shell("picom --backend glx --xrender-sync-fence --daemon")
-awful.spawn.with_shell("nitrogen --restore")
--- auto start  polybar
-awful.spawn.with_shell("polybar")
--- Autostart nitrogen
-awful.spawn.with_shell("sleep 0.001 && nitrogen --restore &") 
+-- Autostart Applications
+-- We chain commands with '&&' or ';' to ensure order: Kill -> Wait -> Start
+
+-- 1. Compositor (Picom)
+awful.spawn.with_shell("killall -q picom; sleep 0.5; picom -b")
+
+-- 2. Status Bar (Polybar)
+awful.spawn.with_shell("killall -q polybar; sleep 0.5; polybar")
+
+-- 3. Wallpaper (Nitrogen)
+-- We wait a bit longer to ensure the desktop is ready
+awful.spawn.with_shell("sleep 1; nitrogen --restore")
+ 
