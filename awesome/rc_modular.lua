@@ -18,6 +18,7 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
 require("configuration.layout")
+local tags = require("configuration.tags")
 
 -- Load Debian menu entries
 local debian = require("debian.menu")
@@ -170,8 +171,7 @@ awful.screen.connect_for_each_screen(function(s)
     set_wallpaper(s)
 
     -- Each screen has its own tag table.
-    awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
-    s.padding = { top = polybar_height }
+    tags.setup(s, awful.layout.layouts[1], polybar_height)
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
