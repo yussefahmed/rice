@@ -94,51 +94,13 @@ local polybar_height                         = 30
 -- }}}
 
 -- {{{ Menu
--- Create a launcher widget and a main menu
--- Custom main menu (no automatic categories!)
-local myawesomemenu = {
-    { "Hotkeys",     function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
-    { "Manual",      terminal .. " -e man awesome" },
-    { "Edit config", editor_cmd .. " " .. awesome.conffile },
-    { "Restart",     awesome.restart },
-    { "Quit",        function() awesome.quit() end }
-}
-
-local menu_awesome  = { " Awesome", myawesomemenu }
-local menu_terminal = { " Terminal", terminal }
-local menu_browser  = { " Browser", "firefox" }
-local menu_files    = { "Files", "nautilus" }
-
--- explicitly defined menu (no freedesktop extras!)
-mymainmenu          = awful.menu({
-    items = {
-        menu_awesome,
-        menu_terminal,
-        menu_browser,
-        menu_files
-    },
-    theme = {
-        height    = 20,
-        width     = 160,
-        bg_normal = "#374247",
-        bg_focus  = "#f7f4e0",
-        fg_normal = "#ffffff",
-        fg_focus  = "#374247"
-    }
+local main_menu = require("ui.main-menu").setup({
+    terminal = terminal,
+    editor_cmd = editor_cmd,
 })
+mymainmenu = main_menu.mymainmenu
+mylauncher = main_menu.mylauncher
 
-
-
-
-
-
-mylauncher = awful.widget.launcher({
-    image = beautiful.awesome_icon,
-    menu = mymainmenu
-})
-
--- Menubar configuration
-menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 -- }}}
 
 -- Keyboard map indicator and switcher
